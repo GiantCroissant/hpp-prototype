@@ -35,8 +35,12 @@ class MyServiceActor extends HttpServiceActor {
   // using existing actorySystem -- context.system
   val driver = new MongoDriver(context.system)
 
+  val uri = "mongodb://heroku:J3Owg3wMhsa9IW4G-Ag7AK3dBpqEvKx1qy_KsKcowVg159Ll6xFj6JX5Ge-BwxXKZhJxzPOZAB1oycCxGt5DuA@dogen.mongohq.com:10063/app31630643"
+
   // a connect manages a pool of connections
-  val connection = driver.connection(List("localhost"))
+  val connection = MongoConnection.parseURI(uri).map { parsedUri =>
+    driver.connection(parsedUri)
+  }
 
   // gets a reference to the database "spray-reactivemongo-textsearch"
   val db = connection.db("spray-reactivemongo-textsearch")

@@ -25,7 +25,7 @@ import akka.event.Logging
 //import JsonFormats._
 
 // ReactiveMongo imports
-import reactivemongo.api.MongoDriver
+import reactivemongo.api.{ MongoDriver, MongoConnection }
 
 
 class MyServiceActor extends HttpServiceActor {

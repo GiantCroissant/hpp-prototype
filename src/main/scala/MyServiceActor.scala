@@ -10,6 +10,7 @@ import play.modules.reactivemongo.json.BSONFormats._
 import scala.concurrent.Future
 import scala.util.{ Success, Failure }
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.Try
 
 import spray.httpx.PlayJsonSupport._
 import spray.httpx.unmarshalling._
@@ -40,6 +41,9 @@ class MyServiceActor extends HttpServiceActor {
   // a connect manages a pool of connections
   val connection = MongoConnection.parseURI(uri).map { parsedUri =>
     driver.connection(parsedUri)
+
+  } getOrElse {
+    driver.connection(List("localhost"))
   }
 
   // gets a reference to the database "spray-reactivemongo-textsearch"

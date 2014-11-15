@@ -2,15 +2,17 @@ import akka.actor.{ ActorSystem, Props }
 import akka.event.Logging
 import akka.io.IO
 import spray.can.Http
+import com.typesafe.config._
 
 object Main extends App {
   implicit val system = ActorSystem("test")
   val log = Logging(system, getClass)
 
-  val SERVER_HOST = "0.0.0.0"
-  val SERVER_PORT = Option(System.getenv("PORT")).getOrElse("8080").toInt
+  val conf = ConfigFactory.load()
+  val localServer = conf.getBoolean("LOCAL_DEBUG")
+  val host = if (localServer) "localhost" else "0.0.0.0"
+  val port = if (localServer) 3000 else System.getenv("PORT").toInt
 
-  log.info("Starting service actor and HTTP server...")
   val service = system.actorOf(Props(new MyServiceActor()), "test-service")
-  IO(Http) ! Http.Bind(service, interface = SERVER_HOST, port = SERVER_PORT)
+  IO(Http) ! Http.Bind(service, interface = host, port = port)
 }

@@ -19,6 +19,9 @@ import spray.httpx.marshalling._
 // Akka imports
 import akka.event.Logging
 
+// config
+import com.typesafe.config._
+
 // ------------------------------------------ //
 // Using case classes + Json Writes and Reads //
 // ------------------------------------------ //
@@ -26,24 +29,28 @@ import play.api.data.Form
 import JsonFormats._
 
 // ReactiveMongo imports
-import reactivemongo.api.{ MongoDriver, MongoConnection }
-
+import reactivemongo.api.MongoConnection._
+import reactivemongo.api.MongoConnectionOptions
+import reactivemongo.api.MongoDriver
+import reactivemongo.core.nodeset._
 
 class MyServiceActor extends HttpServiceActor {
   val log = Logging(context.system, getClass)
+  val conf = ConfigFactory.load()
 
-  // a mongoDriver instance manages an actor system
-  // using existing actorySystem -- context.system
   val driver = new MongoDriver(context.system)
-
-  val uri = "mongodb://heroku:J3Owg3wMhsa9IW4G-Ag7AK3dBpqEvKx1qy_KsKcowVg159Ll6xFj6JX5Ge-BwxXKZhJxzPOZAB1oycCxGt5DuA@dogen.mongohq.com:10063/app31630643"
-
-  // a connect manages a pool of connections
-  val connection = MongoConnection.parseURI(uri).map { parsedUri =>
-    driver.connection(parsedUri)
-
-  } getOrElse {
+  implicit val connection = if (conf.getBoolean("LOCAL_DEBUG")) {
     driver.connection(List("localhost"))
+
+  } else {
+    val pattern = "^mongodb:\\/\\/([\\w]+):([\\w]+)@([\\w\\.]+):([\\d]+)\\/([\\w]+)".r
+    val pattern(user, password, host, port, db) = conf.getString("mongodb.uri")
+    driver.connection(
+      new ParsedURI(List((host, 51368)),
+      new MongoConnectionOptions(1000),
+      List(),
+      Some(db),
+      Some(new Authenticate(db, user, password))))
   }
 
   // gets a reference to the database "spray-reactivemongo-textsearch"
@@ -51,6 +58,11 @@ class MyServiceActor extends HttpServiceActor {
   val testDatas = db.collection("testDatas")
 
   def receive = runRoute {
+    get {
+      complete {
+        "Hello HPP!!"
+      }
+    } ~
     path("products") {
       get {
         complete {

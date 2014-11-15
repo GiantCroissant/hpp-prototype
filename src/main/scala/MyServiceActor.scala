@@ -66,11 +66,13 @@ class MyServiceActor extends HttpServiceActor {
   val testDatas = db.collection("testDatas")
 
   def receive = runRoute {
-    get {
-      complete {
-        "Hello HPP!!"
+    path("/") {
+      get {
+        complete {
+          "Hello HPP!!"
+        }
       }
-    } ~
+    }~
     path("products") {
       get {
         complete {

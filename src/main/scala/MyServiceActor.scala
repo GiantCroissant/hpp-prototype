@@ -22,8 +22,8 @@ import akka.event.Logging
 // ------------------------------------------ //
 // Using case classes + Json Writes and Reads //
 // ------------------------------------------ //
-//import play.api.data.Form
-//import JsonFormats._
+import play.api.data.Form
+import JsonFormats._
 
 // ReactiveMongo imports
 import reactivemongo.api.{ MongoDriver, MongoConnection }
@@ -46,13 +46,22 @@ class MyServiceActor extends HttpServiceActor {
     driver.connection(List("localhost"))
   }
 
-  log.info(connection)
-
   // gets a reference to the database "spray-reactivemongo-textsearch"
   val db = connection.db("spray-reactivemongo-textsearch")
   val testDatas = db.collection("testDatas")
 
   def receive = runRoute {
-    complete("HELLO SPRAY")
+    path("products") {
+      get {
+        complete {
+          var query = Json.obj()
+          val collection = db.collection[JSONCollection]("products")
+          val products = collection.find(query).cursor[Product].collect[List]()
+          products.map { lists =>
+            Json.obj("results" -> lists)
+          }
+        }
+      }
+    }
   }
 }

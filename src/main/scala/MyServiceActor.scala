@@ -61,18 +61,16 @@ class MyServiceActor extends HttpServiceActor {
       Some(new Authenticate(db, user, password))))
   }
 
-  // gets a reference to the database "spray-reactivemongo-textsearch"
-  val db = connection.db("spray-reactivemongo-textsearch")
-  val testDatas = db.collection("testDatas")
+  val db = connection.db("app31630643")
 
   def receive = runRoute {
-    path("/") {
+    path("") {
       get {
         complete {
           "Hello HPP!!"
         }
       }
-    }~
+    } ~
     path("products") {
       get {
         complete {

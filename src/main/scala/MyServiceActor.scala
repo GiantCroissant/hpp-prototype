@@ -43,10 +43,18 @@ class MyServiceActor extends HttpServiceActor {
     driver.connection(List("localhost"))
 
   } else {
-    val pattern = "^mongodb:\\/\\/([\\w]+):([\\w]+)@([\\w\\.]+):([\\d]+)\\/([\\w]+)".r
-    val pattern(user, password, host, port, db) = conf.getString("mongodb.uri")
+    // mongodb://<user>:<password>@dogen.mongohq.com:10063/app31630643
+    //val pattern = "^mongodb:\\/\\/([\\w]+):([\\w]+)@([\\w\\.]+):([\\d]+)\\/([\\w]+)".r
+    //val pattern(user, password, host, port, db) = conf.getString("mongodb.uri")
+
+    val user = "heroku"
+    val password = "J3Owg3wMhsa9IW4G-Ag7AK3dBpqEvKx1qy_KsKcowVg159Ll6xFj6JX5Ge-BwxXKZhJxzPOZAB1oycCxGt5DuA"
+    val host = "dogen.mongohq.com"
+    val port = 10063
+    val db = "app31630643"
+
     driver.connection(
-      new ParsedURI(List((host, 51368)),
+      new ParsedURI(List((host, port)),
       new MongoConnectionOptions(1000),
       List(),
       Some(db),

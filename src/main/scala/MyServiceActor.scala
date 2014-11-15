@@ -48,7 +48,7 @@ class MyServiceActor extends HttpServiceActor {
     //val pattern(user, password, host, port, db) = conf.getString("mongodb.uri")
 
     val user = "heroku"
-    val password = "J3Owg3wMhsa9IW4G-Ag7AK3dBpqEvKx1qy_KsKcowVg159Ll6xFj6JX5Ge-BwxXKZhJxzPOZAB1oycCxGt5DuA"
+    val password = "887368ceee4b6fb9cff5f50e07fe32ee"
     val host = "dogen.mongohq.com"
     val port = 10063
     val db = "app31630643"

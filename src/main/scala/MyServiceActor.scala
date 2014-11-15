@@ -46,6 +46,8 @@ class MyServiceActor extends HttpServiceActor {
     driver.connection(List("localhost"))
   }
 
+  log.info(connection)
+
   // gets a reference to the database "spray-reactivemongo-textsearch"
   val db = connection.db("spray-reactivemongo-textsearch")
   val testDatas = db.collection("testDatas")

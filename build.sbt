@@ -1,10 +1,12 @@
+import NativePackagerKeys._
+
 name := "hpp-prototype"
 
 version := "0.0.1"
 
 scalaVersion := "2.11.4"
 
-name := "spray-mongodb-text-search"
+packageArchetype.java_application
 
 version := "0.1.0"
 
